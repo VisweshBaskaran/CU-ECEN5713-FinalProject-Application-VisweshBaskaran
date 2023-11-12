@@ -1,1 +1,1 @@
-# CU-ECEN5713-FinalProject-sensors-VisweshBaskaran
+# CU-ECEN5713-FinalProject-Application-VisweshBaskaran
