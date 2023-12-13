@@ -2,43 +2,27 @@
 # File name: Air_quality.py
 # File Description: Driver code for MQ135 sensor
 # Reference: Based on Raspberry Pi Adjustable hackster.io blog [https://www.hackster.io/kutluhan-aktar/raspberry-pi-adjustable-air-quality-detector-running-on-gui-b7fb75]
-import busio
-import digitalio
-import board
-import adafruit_mcp3xxx.mcp3008 as MCP
-from adafruit_mcp3xxx.analog_in import AnalogIn
-from time import sleep
 
-# Create the SPI bus
-spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+from gpiozero import MCP3008
+import time
 
+# Connect the DOUT pin of the MQ135 sensor to one of the analog inputs (e.g., CH0) on the MCP3008
+mq135_channel = 0
+threshold = 200  # Adjust this threshold based on your requirements
 
-# Create the cs (chip select)
-cs = digitalio.DigitalInOut(board.D5)
+# Create an MCP3008 object
+adc = MCP3008(channel=mq135_channel)
 
-
-# Create the mcp object
-mcp = MCP.MCP3008(spi, cs)
-
-
-# Create analog inputs connected to the input pins on the MCP3008.
-channel_0 = AnalogIn(mcp, MCP.P0)
-
-# Define a function to evaluate the sensor value and print if it's safe or not
-def evaluateSensorValue():
-    # Test your module, then define the value range - in this case between 0 and 60000.
-    sensorValue = int((channel_0.value - 0) * (1023 - 0) / (60000 - 0) + 0)
-    
-    print("Air Quality Sensor Value:", sensorValue)
-    
-    # Threshold
-    if(sensorValue > 300):
-        print("Status: DANGER - Air Quality Deteriorating!")
-    else:
-        print("Status: OK")
-
-
-# Continuously monitor and display the sensor value and status
 while True:
-    evaluateSensorValue()
-    sleep(1)
+        # Read the analog value from the MQ135 sensor
+        sensor_value = adc.value
+
+        # Print the sensor value and the result
+        print(f"Sensor Value: {sensor_value} PPM")
+        if sensor_value > threshold:
+            print("Gas concentration is high!")
+        else:
+            print("Gas concentration is within safe levels.")
+
+        # Wait for a short duration before reading again
+        time.sleep(1)
