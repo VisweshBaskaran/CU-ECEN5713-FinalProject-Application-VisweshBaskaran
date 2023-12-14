@@ -6,11 +6,10 @@
 from gpiozero import MCP3008
 import time
 
-# Connect the DOUT pin of the MQ135 sensor to one of the analog inputs (e.g., CH0) on the MCP3008
 mq135_channel = 0
 threshold = 200  
 
-# Create an MCP3008 object
+#  MCP3008 object
 adc = MCP3008(channel=mq135_channel)
 
 while True:
@@ -24,5 +23,5 @@ while True:
         else:
             print("Gas concentration is within safe levels.")
 
-        # Wait for a short duration before reading again
+        # Wait for a short duration 
         time.sleep(1)
